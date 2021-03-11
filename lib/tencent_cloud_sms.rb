@@ -1,6 +1,6 @@
 require "tencent_cloud_sms/version"
 require "tencent_cloud_sms/configuration"
-require "httparty"
+require "tencent_cloud_sms/http_client"
 
 module TencentCloudSms
   URL = 'sms.tencentcloudapi.com'
@@ -10,7 +10,7 @@ module TencentCloudSms
     attr_accessor :phone_number, :msg, :time_now, :nonce
     def send_msg(phone_number, msg)
       assign_attributes(phone_number, msg)
-      res = HTTParty.get("https://#{URL}/", query: params_with_sign)
+      res = HttpClient.get("https://#{URL}/", params_with_sign)
       result = JSON.load(res.body)
       result_code = result["Response"]["SendStatusSet"].first["Code"]
       return 'success' if result_code == 'Ok'
